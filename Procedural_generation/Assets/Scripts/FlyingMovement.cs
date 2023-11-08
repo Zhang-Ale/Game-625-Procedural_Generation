@@ -8,8 +8,11 @@ public class FlyingMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 startPos;
     float ang = 45;
-    public float _speed; 
+    public float _speed;
+    public float flyForce; 
     public bool dead;
+    public GameObject EndUI; 
+    private GameplayManager gameplayManager;
 
     public static FlyingMovement Instance { get; private set; }
     
@@ -28,6 +31,7 @@ public class FlyingMovement : MonoBehaviour
         emission = ps.emission;
         flamesEmission = flames.emission;
         AudioManager = GetComponent<AudioSource>();
+        gameplayManager = GameObject.FindObjectOfType<GameplayManager>();
     }
 
     void Update()
@@ -39,7 +43,7 @@ public class FlyingMovement : MonoBehaviour
         rb.AddForce(Vector3.right * _speed);
         if (Input.GetKey(KeyCode.Space))
         {
-            rb.AddForce(Vector2.up * gravity * Time.deltaTime *1800);
+            rb.AddForce(Vector2.up * gravity * Time.deltaTime * flyForce);
             flamesEmission.enabled = true;
             
         }
@@ -58,7 +62,8 @@ public class FlyingMovement : MonoBehaviour
             rb.AddForce(Vector2.right * 1800);
             rb.AddTorque(400);
             emission.enabled = false;
-            Destroy(this.gameObject, 1.5f);
+            EndUI.SetActive(true);
+            gameplayManager.gameOver = true; 
         }  
     }
     public void Restart()

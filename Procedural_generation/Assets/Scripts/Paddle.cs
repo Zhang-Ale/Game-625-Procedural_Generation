@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Paddle : MonoBehaviour
 {
-    public int score = 100;
+    public int score = 10;
     private GameplayManager gameplayManager;
 
     private void Awake()
@@ -14,7 +14,10 @@ public class Paddle : MonoBehaviour
     }
     void OnCollisionEnter2D (Collision2D collision)
     {
-        gameplayManager.UpdateScore(score);
-
+        if(collision.gameObject.tag == "Player")
+        {
+            gameplayManager.UpdateScore(score);
+            Destroy(this.gameObject);
+        }
     }
 }

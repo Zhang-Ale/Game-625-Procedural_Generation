@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class FlyingGame : MonoBehaviour
 {
-    public GameObject pipe;
-    public GameObject obstacle;
-    private GameObject startPipe;
-    private float startOffset;
+    public GameObject obstacleUp;
+    public GameObject obstacleDown;
+    public GameObject paddle;
+    public float startOffset;
     public static FlyingGame Instance { get; private set; }
-    [SerializeField] private float _maxTime = 1.5f;
-    [SerializeField] private float _heightRange = 0.45f;
-    private float _timer; 
+    [SerializeField] private float _maxTime;
+    private float _timer;
+    private GameObject player;
+    public float destroyTime; 
     
     void Start()
     {
@@ -31,15 +32,21 @@ public class FlyingGame : MonoBehaviour
 
     public void RestartGame()
     {
-        Destroy(startPipe);
-        startPipe = Instantiate(pipe, new Vector2(x: startOffset, y: 0 ), Quaternion.identity); 
+        Destroy(paddle);
+        paddle = Instantiate(obstacleDown, new Vector2(x: startOffset, y: 0 ), Quaternion.identity); 
     }
 
     private void SpawnObstacle()
     {
-        Vector3 spawnPos = transform.position + new Vector3(0, Random.Range(-_heightRange, _heightRange));
-        GameObject Pipe = Instantiate(pipe, spawnPos, Quaternion.identity);
-        GameObject Obstacle = Instantiate(obstacle, spawnPos, Quaternion.identity);
-        Destroy(Pipe, 10f); 
+        player = GameObject.Find("Player"); 
+        Vector3 spawnPosUp = transform.position + new Vector3(player.transform.position.x + Random.Range(60, 100), Random.Range(-20, -25), 0);
+        Vector3 spawnPosDown = transform.position + new Vector3(player.transform.position.x + Random.Range(60, 100), Random.Range(20, 25), 0);
+        Vector3 paddlePos = transform.position + new Vector3(player.transform.position.x + Random.Range(60, 100), Random.Range(-10, 10), 0);
+        GameObject ObstacleUp = Instantiate(obstacleUp, spawnPosUp, Quaternion.identity);
+        GameObject ObstacleDown = Instantiate(obstacleDown, spawnPosDown, Quaternion.Euler(0, 0, 180));
+        GameObject Paddle = Instantiate(paddle, paddlePos, Quaternion.identity);
+        Destroy(ObstacleDown, destroyTime);
+        Destroy(ObstacleUp, destroyTime);
+        Destroy(Paddle, destroyTime);
     }
 }
